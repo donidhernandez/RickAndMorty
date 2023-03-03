@@ -8,27 +8,83 @@
 import Foundation
 
 final class CharactersViewModel: ObservableObject {
-    @Published var characters: [Character] = []
+    @Published private(set) var characters: [Character] = []
+    @Published private(set) var error: NetworkManagerImpl.NetworkError?
+    @Published private(set) var viewState: ViewState?
+    @Published var hasError = false
     
-    func getAllCharacters() async throws {
-        let url = URL(string: "\(baseURL)/character")!
-        let urlRequest = URLRequest(url: url)
+    private(set) var page = 1
+    private(set) var totalPages: Int?
+    
+    private let networkManager: NetworkManager!
+    
+    var isLoading: Bool {
+        viewState == .loading
+    }
+    
+    var isFetching: Bool {
+        viewState == .fetching
+    }
+    
+    init(networkManager: NetworkManager = NetworkManagerImpl.shared) {
+        self.networkManager = networkManager
+    }
+    
+    @MainActor
+    func getAllCharacters() async {
+        viewState = .loading
+        defer { viewState = .finished }
+        
         do {
-            let (data, response) = try await URLSession.shared.data(for: urlRequest)
-            
-            guard let httpResponse = response as? HTTPURLResponse,
-                  (200...299).contains(httpResponse.statusCode) else {
-                throw NetworkError.invalidStatusCode
-            }
-            
-            let decoder = JSONDecoder()
-            guard let charactersResponse = try? decoder.decode(CharactersResponse.self, from: data) else {
-                throw NetworkError.decodingError
-            }
-            
-            self.characters = charactersResponse.results
+            let response = try await networkManager.request(session: .shared, .allCharacters(page: page), type: CharactersResponse.self)
+            self.totalPages = response.info.pages
+            self.characters = response.results
         } catch {
-            print(error)
+            self.hasError = true
+            if let networkError = error as? NetworkManagerImpl.NetworkError {
+                self.error = networkError
+            } else {
+                self.error = .custom(error: error)
+            }
         }
     }
+    
+    @MainActor
+    func getNextSetOfCharacters() async {
+        guard page != totalPages else { return }
+        
+        viewState = .fetching
+        defer { viewState =  .finished }
+        
+        page += 1
+        
+        do {
+            let response = try await networkManager.request(session: .shared, .allCharacters(page: page), type: CharactersResponse.self)
+            self.totalPages = response.info.pages
+            self.characters += response.results
+            
+        } catch {
+            self.hasError = true
+            if let networkError = error as? NetworkManagerImpl.NetworkError {
+                self.error = networkError
+            } else {
+                self.error = .custom(error: error)
+            }
+        }
+    }
+    
+    
+    func hasReachedEnd(of character: Character) -> Bool {
+        characters.last?.id == character.id
+    }
 }
+
+extension CharactersViewModel {
+    enum ViewState {
+        case fetching
+        case loading
+        case finished
+    }
+}
+
+
