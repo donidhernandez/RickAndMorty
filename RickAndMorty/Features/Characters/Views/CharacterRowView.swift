@@ -40,6 +40,6 @@ struct CharacterRowView: View {
 
 struct CharacterRowView_Previews: PreviewProvider {
     static var previews: some View {
-        CharacterRowView(character: dummyData)
+        CharacterRowView(character: characterDummyData)
     }
 }

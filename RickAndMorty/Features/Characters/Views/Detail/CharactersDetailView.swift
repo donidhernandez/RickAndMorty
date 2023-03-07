@@ -38,6 +38,6 @@ struct CharactersDetailView: View {
 
 struct CharactersDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        CharactersDetailView(character: dummyData)
+        CharactersDetailView(character: characterDummyData)
     }
 }

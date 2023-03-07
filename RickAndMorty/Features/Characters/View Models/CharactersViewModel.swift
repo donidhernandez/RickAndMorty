@@ -10,7 +10,7 @@ import Foundation
 final class CharactersViewModel: ObservableObject {
     @Published private(set) var characters: [Character] = []
     @Published private(set) var error: NetworkManagerImpl.NetworkError?
-    @Published private(set) var viewState: ViewState?
+    @Published private(set) var characterDetail: Character!
     @Published var hasError = false
     
     private(set) var page = 1
@@ -18,13 +18,6 @@ final class CharactersViewModel: ObservableObject {
     
     private let networkManager: NetworkManager!
     
-    var isLoading: Bool {
-        viewState == .loading
-    }
-    
-    var isFetching: Bool {
-        viewState == .fetching
-    }
     
     init(networkManager: NetworkManager = NetworkManagerImpl.shared) {
         self.networkManager = networkManager
@@ -32,9 +25,6 @@ final class CharactersViewModel: ObservableObject {
     
     @MainActor
     func getAllCharacters() async {
-        viewState = .loading
-        defer { viewState = .finished }
-        
         do {
             let response = try await networkManager.request(session: .shared, .allCharacters(page: page), type: CharactersResponse.self)
             self.totalPages = response.info.pages
@@ -50,11 +40,23 @@ final class CharactersViewModel: ObservableObject {
     }
     
     @MainActor
+    func getSingleCharacter(id: Int) async {
+        do {
+            let response = try await networkManager.request(session: .shared, .singleEpisode(id: id), type: Character.self)
+            self.characterDetail = response
+        } catch {
+            self.hasError = true
+            if let networkError = error as? NetworkManagerImpl.NetworkError {
+                self.error = networkError
+            } else {
+                self.error = .custom(error: error)
+            }
+        }
+    }
+    
+    @MainActor
     func getNextSetOfCharacters() async {
         guard page != totalPages else { return }
-        
-        viewState = .fetching
-        defer { viewState =  .finished }
         
         page += 1
         
@@ -79,12 +81,5 @@ final class CharactersViewModel: ObservableObject {
     }
 }
 
-extension CharactersViewModel {
-    enum ViewState {
-        case fetching
-        case loading
-        case finished
-    }
-}
 
 

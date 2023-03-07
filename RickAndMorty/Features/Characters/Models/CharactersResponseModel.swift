@@ -44,13 +44,5 @@ struct OriginOrLocation: Codable {
     let url: String
 }
 
-struct Info: Codable {
-    let count: Int
-    let pages: Int
-    let next: String?
-    let prev: String?
-}
-
-
-var dummyData = Character(id: 1, name: "Morty Smith", status: .alive, type: "", species: "Human", gender: .male, location: OriginOrLocation(name: "Earth", url: "https://rickandmortyapi.com/api/location/20"), origin: OriginOrLocation(name: "Earth", url: "https://rickandmortyapi.com/api/location/1"), image: "https://rickandmortyapi.com/api/character/avatar/2.jpeg", episode: ["https://rickandmortyapi.com/api/episode/1","https://rickandmortyapi.com/api/episode/2",], url: "https://rickandmortyapi.com/api/character/2")
+var characterDummyData = Character(id: 1, name: "Morty Smith", status: .alive, type: "", species: "Human", gender: .male, location: OriginOrLocation(name: "Earth", url: "https://rickandmortyapi.com/api/location/20"), origin: OriginOrLocation(name: "Earth", url: "https://rickandmortyapi.com/api/location/1"), image: "https://rickandmortyapi.com/api/character/avatar/2.jpeg", episode: ["https://rickandmortyapi.com/api/episode/1","https://rickandmortyapi.com/api/episode/2",], url: "https://rickandmortyapi.com/api/character/2")
 

@@ -9,7 +9,9 @@ import Foundation
 
 enum Endpoint {
     case allCharacters(page: Int)
-   
+    case allEpisodes(page: Int)
+    case singleCharacter(id: Int)
+    case singleEpisode(id: Int)
 }
 
 extension Endpoint {
@@ -19,6 +21,12 @@ extension Endpoint {
         switch self {
         case .allCharacters:
             return "/api/character"
+        case .singleCharacter(let id):
+            return "/api/character/\(id)"
+        case .allEpisodes:
+            return "/api/episode"
+        case .singleEpisode(let id):
+            return "/api/episode/\(id)"
         }
     }
     
@@ -26,6 +34,10 @@ extension Endpoint {
         switch self {
         case .allCharacters(let page):
             return ["page": "\(page)"]
+        case .allEpisodes(page: let page):
+            return ["page": "\(page)"]
+        default:
+            return nil
         }
     }
     

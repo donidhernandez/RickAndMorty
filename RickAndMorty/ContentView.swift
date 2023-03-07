@@ -11,9 +11,14 @@ struct ContentView: View {
     
     var body: some View {
         TabView {
-            CharactersListView()
+            CharactersView()
                 .tabItem {
                     Label("Characters", systemImage: "person.3.fill")
+                }
+            
+            EpisodesView()
+                .tabItem {
+                    Label("Episodes", systemImage: "film.stack")
                 }
         }
         

@@ -35,6 +35,7 @@ final class NetworkManagerImpl: NetworkManager {
         
         let jsonDecoder = JSONDecoder()
         jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
+        jsonDecoder.dateDecodingStrategy = .iso8601
         return try jsonDecoder.decode(T.self, from: data)        
     }
 }

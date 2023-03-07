@@ -65,14 +65,14 @@ struct CharacterInfoView: View {
                             .font(.title3)
                             .fontWeight(.medium)
                             .fontDesign(.rounded)
-                        Link(character.origin.name, destination: URL(string: character.origin.url)!)
+                        Text(character.origin.name)
                     }
                     HStack {
                         Text("First seen in:")
                             .font(.title3)
                             .fontWeight(.medium)
                             .fontDesign(.rounded)
-                        Link(character.location.name, destination: URL(string: character.location.url)!)
+                        Text(character.location.name)
                     }
                     
                 }
@@ -85,6 +85,6 @@ struct CharacterInfoView: View {
 
 struct CharacterInfoView_Previews: PreviewProvider {
     static var previews: some View {
-        CharacterInfoView(character: dummyData)
+        CharacterInfoView(character: characterDummyData)
     }
 }
