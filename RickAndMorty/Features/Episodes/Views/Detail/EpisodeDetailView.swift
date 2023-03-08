@@ -12,13 +12,12 @@ struct EpisodeDetailView: View {
     @State var episode: Episode
     
     var body: some View {
-        NavigationStack {
-            EpisodeDetailInfo(episode: episode)
+        VStack {
+            EpisodeDetailInfoView(episode: episode)
             EpisodeCharactersGridView(episode: episode)
             Spacer()
         }
-        
-        .padding()
+       
     }
 }
 

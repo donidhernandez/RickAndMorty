@@ -20,6 +20,11 @@ struct ContentView: View {
                 .tabItem {
                     Label("Episodes", systemImage: "film.stack")
                 }
+            
+            LocationViews()
+                .tabItem {
+                    Label("Locations", systemImage: "globe")
+                }
         }
         
     }

@@ -12,6 +12,7 @@ enum Endpoint {
     case allEpisodes(page: Int)
     case singleCharacter(id: Int)
     case singleEpisode(id: Int)
+    case allLocations(page: Int)
 }
 
 extension Endpoint {
@@ -27,6 +28,8 @@ extension Endpoint {
             return "/api/episode"
         case .singleEpisode(let id):
             return "/api/episode/\(id)"
+        case .allLocations:
+            return "/api/location"
         }
     }
     
@@ -35,6 +38,8 @@ extension Endpoint {
         case .allCharacters(let page):
             return ["page": "\(page)"]
         case .allEpisodes(page: let page):
+            return ["page": "\(page)"]
+        case .allLocations(let page):
             return ["page": "\(page)"]
         default:
             return nil
